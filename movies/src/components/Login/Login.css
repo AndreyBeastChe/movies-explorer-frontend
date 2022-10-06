@@ -1,0 +1,17 @@
+.login {
+  background-color: #202020;
+  height: 100%;
+  font-style: normal;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  justify-content: center;
+  padding: 70px 0 70px;
+  height: 100vh;
+}
+
+@media (max-width: 767px) {
+  .login {
+    padding: 50px 30px 30px;
+  }
+}
