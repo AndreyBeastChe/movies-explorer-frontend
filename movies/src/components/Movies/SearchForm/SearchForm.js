@@ -14,11 +14,12 @@ function SearchForm(props) {
   <form action="" className="search__form">
     <input
     className="search__input"
+    required
       type="text"
       placeholder="Фильм"
       name="search-input"
     />
-    <input
+    <button
       className="search__button"
       type="submit"
       name="search-button"

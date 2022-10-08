@@ -14,6 +14,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 0 19px;
+  text-decoration: none;
 }
 
 .portfolio__block:last-of-type {
@@ -28,6 +29,7 @@
   font-size: 30px;
   line-height: 50px;
 }
+
 .portfolio__button {
   font-style: normal;
   font-weight: 400;

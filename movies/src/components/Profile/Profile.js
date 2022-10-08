@@ -17,8 +17,8 @@ function Profile() {
       </div>
 
       <div className="profile__button">
-        <button className="profile__edit-button">Редактировать</button>
-        <button className="profile__logout-button">Выйти из аккаунта</button>
+        <button className="profile__edit-button" type="button">Редактировать</button>
+        <button className="profile__logout-button" type="button">Выйти из аккаунта</button>
       </div>
     </section>
   );

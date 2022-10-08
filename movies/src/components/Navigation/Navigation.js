@@ -11,6 +11,7 @@ function Navigation(props) {
           <button
             className="navigation__close"
             onClick={props.onClose}
+            type="button"
           ></button>
           <Link to="/" className="navigation__link">
             Главная

@@ -49,12 +49,20 @@
 }
 
 .project__schedule-backend {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
   background-color: #3ddc84;
-  color: #ffffff;
+  color: #000000;
   padding: 9px 14px;
 }
 
 .project__schedule-frontend {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
   background-color: #303030;
   color: #ffffff;
   padding: 9px 14px;
@@ -103,5 +111,15 @@
 @media (max-width: 360px) {
   .project {
     padding: 70px 18px;
+  }
+
+  .project__schedule-backend {
+    font-size: 11px;
+    line-height: 13px;
+  }
+
+  .project__schedule-frontend {
+    font-size: 11px;
+    line-height: 13px;
   }
 }

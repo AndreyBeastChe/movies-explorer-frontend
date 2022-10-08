@@ -31,8 +31,8 @@ function MoviesCard({ movie, isSavedMovie }) {
                 </div>
                 {
                     isSavedMovie ? 
-                        <button className={deleteButtonClassName} onClick={handleDelete}></button> :
-                        <button className={likeButtonClassName} onClick={handleLike}></button>
+                        <button className={deleteButtonClassName} onClick={handleDelete} type="button"></button> :
+                        <button className={likeButtonClassName} onClick={handleLike} type="button"></button>
                 }
            
             </div>

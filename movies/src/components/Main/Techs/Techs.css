@@ -39,7 +39,7 @@
 .techs__list {
   display: flex;
   justify-content: center;
-}
+list-style-type: none;}
 
 .techs__list-item {
   font-style: normal;
@@ -50,25 +50,30 @@
   border-radius: 10px;
   margin: 10px;
   width: 90px;
-  padding: 21px 0;
+  padding: 21px 0;  
   line-height: 17px;
   text-align: center;
   letter-spacing: -0.04em;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .techs {
-    padding: 140px 50px;
+    padding: 140px 0;
   }
 
   .techs__list {
+    padding-left: 30px;
+    padding-right: 30px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min-content, 84px));
+    /* grid-template-columns: repeat(auto-fit, minmax(min-content, 84px)); */
+    grid-template-columns: repeat( auto-fit, minmax(84px, 1fr));
+    grid-column-gap: 10px;
   }
 }
 
 @media (max-width: 360px) {
   .techs {
+    background-color: #202020;
     padding: 70px 18px;
   }
 

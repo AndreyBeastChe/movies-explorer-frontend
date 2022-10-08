@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 function Register() {
   return (
+    <main>
     <section className="register">
       <form className="authform" noValidate>
         <div className="authform__fields">
@@ -54,6 +55,7 @@ function Register() {
         </div>
       </form>
     </section>
+    </main>
   );
 }
 

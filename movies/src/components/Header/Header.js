@@ -43,6 +43,7 @@ function Header(props) {
           className="header__menu"
           id="show__menu"
           onClick={props.onEditMenu}
+          type="button"
         ></button>
      </div>
     </header>

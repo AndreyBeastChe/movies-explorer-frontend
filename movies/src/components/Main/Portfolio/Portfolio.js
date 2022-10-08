@@ -4,23 +4,24 @@ function Portfolio() {
   return(
 <section className="portfolio">
   <h2 className="portfolio__title">Портфолио</h2>
-  <div className="portfolio__block">
-    <a className="portfolio__link" href="https://github.com/AndreyBeastChe/russian-travel">Статичный сайт</a>
+  <a className="portfolio__block" href="https://github.com/AndreyBeastChe/russian-travel" target="blank">
+    <div className="portfolio__link" >Статичный сайт</div>
     <div className="portfolio__button">↗</div>
-  </div>
-  <div className="portfolio__block">
-    <a className="portfolio__link" href="https://github.com/AndreyBeastChe/mesto-react">Адаптивный сайт</a>
+  </a>
+  <a className="portfolio__block" href="https://github.com/AndreyBeastChe/mesto-react" target="blank">
+    <div className="portfolio__link">Адаптивный сайт</div>
     <div className="portfolio__button">↗</div>
-  </div>
-  <div className="portfolio__block">
-    <a 
+  </a>
+  <a className="portfolio__block" href="https://github.com/AndreyBeastChe/react-mesto-api-full"
+        target="blank">
+    <div 
         className="portfolio__link"  
-        href="https://github.com/AndreyBeastChe/react-mesto-api-full"
+        
     >
         Одностраничное приложение
-    </a>
+    </div>
     <div className="portfolio__button">↗</div>
-  </div>
+  </a>
 </section>
   );
 }

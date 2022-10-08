@@ -72,6 +72,8 @@
   font-size: 14px;
   line-height: 17px;
   margin-right: 20px;
+  color: #FFFFFF;
+  text-decoration: none;
 }
 
 .about-me__link:hover {
@@ -85,9 +87,7 @@
     margin-left: 270px;
 }
 
-
-
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .about-me {
       padding: 90px 50px 90px;
   }
@@ -105,8 +105,7 @@
   }
 
   .about-me__photo {
-  
-    margin-left: 255px;
+    margin-left: 50px;
 }
 }
 

@@ -27,6 +27,11 @@
   padding-left: 25px;
 }
 
+.search__input:focus {
+  outline: none;
+  border-bottom: 1px solid #ffffff;
+}
+
 .search__button {
   margin-left: -110px;
   background: #4285f4;
