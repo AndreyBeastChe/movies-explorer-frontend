@@ -12,8 +12,8 @@
 }
 
 .search__input {
-  height: 100%;
-  padding: 14px 40px 14px 22px;
+  height: 72px;
+  padding: 0 40px 0 22px;
   outline: none;
   opacity: 0.2;
   border: 1.5px solid #aaaaaa;
@@ -25,16 +25,17 @@
   line-height: 20px;
   background-color: #202020;
   padding-left: 25px;
+  color: #ffffff;
 }
 
 .search__input:focus {
-  outline: none;
-  border-bottom: 1px solid #ffffff;
+  opacity: .8;
+  border: 1px solid #ffffff;
 }
 
 .search__button {
   margin-left: -110px;
-  background: #4285f4;
+  background: #4285F4;
   border-radius: 5px;
   width: 100px;
   height: 52px;
@@ -44,7 +45,12 @@
   line-height: 18px;
   text-align: center;
   color: #ffffff;
-  cursor: pointer;
+  border: none;
+  z-index: 1;
+}
+
+.search__button:hover {
+  opacity: .8;
 }
 
 .search__filter {

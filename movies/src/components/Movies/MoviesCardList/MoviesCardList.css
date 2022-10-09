@@ -20,11 +20,11 @@
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 800px) {
   .movies__list {
+    padding: 10px 10px;
     gap: 10px;
-    padding-left: 0;
-    padding-right: 0;
     grid-template-columns: repeat(1, 1fr);
+
   }
 }

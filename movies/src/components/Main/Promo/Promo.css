@@ -46,7 +46,7 @@
 
 .promo__button {
   grid-area: edit-button;
-  margin: 146px auto 25px 70px;
+  margin: 146px auto 25px 0;
   border: none;
   width: 129px;
   height: 36px;

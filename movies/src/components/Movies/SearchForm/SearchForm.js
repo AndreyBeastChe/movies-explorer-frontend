@@ -23,8 +23,7 @@ function SearchForm(props) {
       className="search__button"
       type="submit"
       name="search-button"
-      value= "Поиск"
-    />
+    >Поиск</button>
   </form>
 
   <div className="search__filter">
