@@ -1,0 +1,43 @@
+.more-result {
+  display: flex;
+  justify-content: center;
+  height: 166px;
+  max-width: 1280px;
+
+}
+
+.more-result__button {
+  width: 1140px;
+  height: 36px;
+  margin-top: 50px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  border-radius: 6px;
+  background-color: #2f2f2f;
+  color: #ffffff;
+  border: none;
+}
+
+.more-result__button:active {
+  opacity: 0.6;
+}
+
+@media (max-width: 1200px) {
+  .more-result__button {
+    width: 708px;
+  }
+
+  @media (max-width: 767px) {
+    .more-result__button {
+      width: 420px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .more-result__button {
+      width: 240px;
+    }
+  }
+}
