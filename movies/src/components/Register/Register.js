@@ -9,19 +9,19 @@ function Register(props) {
 }
 
 const errorStatus = (status) => {
+  if(status === '409') {
+    return "Такой пользователь уже существует."
+}
 
     if(status === '400') {
         return "Произошла ошибка."
-    }
-    if(status === '409') {
-        return "mail уже занят."
     }
     if(status === '500') {
         return "На сервере произошла ошибка."
     }
 
 }
-const errorMessage = errorStatus(props.submitError)
+const errorMessage = errorStatus(props.submitErr)
 
   return (
     <main>
@@ -67,7 +67,7 @@ const errorMessage = errorStatus(props.submitError)
         </div>
         <div className="authform__submit">
           <span className="authform__submit-error">{errorMessage}</span>
-          <button className="authform__submit-button" type="submit" disabled={!props.isValid}>
+          <button className="authform__submit-button" type="submit" onSubmit={handleSubmit} disabled={!props.isValid}>
           {props.isLoading ? "Загрузка" : "Зарегистрироваться"}
           </button>
           <div className="authform__link">

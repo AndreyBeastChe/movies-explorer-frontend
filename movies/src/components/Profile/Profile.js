@@ -43,7 +43,7 @@ function Profile(props) {
             placeholder={currentUser.name}
             onChange={props.handleChange}
             disabled={!edit}
-            value={props.values.username}
+            value={props.values.name}
           ></input>
           <span className="profile__error">{props.errors.name}</span>
         </div>
@@ -98,3 +98,6 @@ function Profile(props) {
 }
 
 export default Profile;
+
+
+

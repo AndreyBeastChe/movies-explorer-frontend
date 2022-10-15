@@ -1,6 +1,7 @@
 import "./App.css";
 import React from "react";
-import { Route, Switch, BrowserRouter, useHistory } from "react-router-dom";
+import { Route, Switch, Router, useHistory } from "react-router-dom";
+import { createBrowserHistory } from "history";
 import ProtectedRoute from "../../ProtectedRoute/ProtectedRoute";
 import Main from "../Main/Main";
 import Header from "../Header/Header";
@@ -23,6 +24,8 @@ function App() {
   const ERROR =
     "Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз";
   const EMPTY_RESULT = "Ничего не найдено, попробуйте изменить запрос.";
+  //const history = createBrowserHistory();
+  const history = useHistory();
   const [isEditMenuOpen, setEditMenuOpen] = React.useState(false);
   const [searchErr, setSearchErr] = React.useState("");
   const [searchValue, setSearchValue] = React.useState("");
@@ -34,8 +37,27 @@ function App() {
   const { handleChange, errors, values, isValid } = Validation();
   const [submitErr, setSubmitErr] = React.useState("");
   const [currentUser, setCurrentUser] = React.useState({});
-  const history = useHistory();
   const [loggedIn, setLoggedIn] = React.useState(true);
+
+  React.useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      mainApi
+        .checkToken(jwt)
+        .then((res) => {
+          setLoggedIn(true);
+          setCurrentUser(res);
+        })
+        .catch(() => {
+          localStorage.removeItem("jwt");
+        });
+    } else {
+      setLoggedIn(false);
+       history.push('/signin');
+    }
+  }, [history]);
+
+  React.useEffect(() => {}, [loggedIn]);
 
   function handleMenuClick() {
     setEditMenuOpen(true);
@@ -119,7 +141,6 @@ function App() {
       .login(data.email, data.password)
       .then((res) => {
         if (res.token) {
-          debugger;
           setLoggedIn(true);
           setCurrentUser(data.username);
           localStorage.setItem("jwt", res.token);
@@ -131,9 +152,8 @@ function App() {
         console.log(err);
       })
       .finally(() => {
-        debugger;
         setLoading(false);
-        history.push("/movies");
+        history.push('/movies');
       });
   };
 
@@ -239,7 +259,7 @@ function App() {
 
   function handleEditProfile(data, setIsEditable) {
     mainApi
-      .updateProfile(data.username, data.email)
+      .updateProfile(data.name, data.email)
       .then((data) => {
         setCurrentUser(data);
       })
@@ -253,7 +273,6 @@ function App() {
   }
 
   function handleSignOut(e) {
-    debugger;
     e.preventDefault();
     setLoggedIn(false);
     localStorage.removeItem("jwt");
@@ -263,35 +282,16 @@ function App() {
     history.push("/");
   }
 
-  function handleCheckToken() {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      mainApi
-        .checkToken(jwt)
-        .then((res) => {
-          if (res) {
-            debugger;
-            setLoggedIn(true);
-            setCurrentUser(res);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }
-
-  React.useEffect(() => {
-    handleCheckToken();
-  }, []);
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <BrowserRouter>
           <Switch>
             <Route exact path="/">
-              <HeaderLanding />
+              {loggedIn ? (
+                <Header onEditMenu={handleMenuClick} />
+              ) : (
+                <HeaderLanding />
+              )}
               <Main isLoggedIn={loggedIn} />
               <Footer />
             </Route>
@@ -375,7 +375,6 @@ function App() {
               <NotFound />
             </Route>
           </Switch>
-        </BrowserRouter>
       </div>
     </CurrentUserContext.Provider>
   );

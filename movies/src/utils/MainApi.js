@@ -56,7 +56,7 @@ class Api {
           .then(this.checkResponse)
       }
 
-      updateProfile = (username, email) => {
+      updateProfile = (name, email) => {
         return fetch(`${this._url}/users/me`, {
           method: "PATCH",
           headers: {
@@ -64,7 +64,7 @@ class Api {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`,
           },
           body: JSON.stringify({
-            name: username,
+            name: name,
             email: email,
           })
         }).then(this.checkResponse);
