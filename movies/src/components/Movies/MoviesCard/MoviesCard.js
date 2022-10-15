@@ -1,43 +1,102 @@
 import "./MoviesCard.css";
-import React from 'react';
+import React from "react";
+
+function MoviesCard(props) {
+  const [isLiked, setIsLiked] = React.useState(false);
+  const [isDeleteButtonVisible, setIsDeleteButtonVisible] =
+    React.useState(false);
+  const likeButtonClassName = `movie__like-button ${
+    isLiked ? "movie__like-button_active" : ""
+  }`;
+  const deleteButtonClassName = `movie__delete-button ${
+    isDeleteButtonVisible ? "movie__delete-button_active" : ""
+  }`;
+  const IMG_URL = "https://api.nomoreparties.co/";
+  const savedMoviesStorage = JSON.parse(localStorage.getItem("savedMovies"));
 
 
-function MoviesCard({ movie, isSavedMovie }) {
+  function handleCardMouseOver() {
+    setIsDeleteButtonVisible(true);
+  }
 
-     const [isLiked, setIsLiked] = React.useState(false);
-     const isDeleteButtonVisible = true;
+  function handleCardMouseOut() {
+    setIsDeleteButtonVisible(false);
+  }
 
+  const handleLike = () => {
+    props.saveMovie(props.movie, isLiked, setIsLiked);
+  };
 
-    const handleLike = () => {
-        isLiked ? setIsLiked(false) : setIsLiked(true);
+  const handleDelete = () => {
+    props.deleteMovie(props.savedMovie);
+  };
+
+  const adoptDuration = (min) => {
+    return `${Math.floor(min / 60) % 24} ч ${min % 60} минут`;
+  };
+
+  React.useEffect(() => {
+    if (props.movie) {
+        savedMoviesStorage?.some((i) => i.movieId === props.movie.id)
+        ? setIsLiked(true)
+        : setIsLiked(false);
     }
+  }, [props.movie, savedMoviesStorage]);
 
-    const handleDelete = () => {
-    }
-
-    const likeButtonClassName = `movie__like-button ${isLiked ? "movie__like-button_active" : ""}`;
-    const deleteButtonClassName = `movie__delete-button ${isDeleteButtonVisible ? "movie__delete-button_active" : ""}`;
-
-
-    return (
-        <li className="movie">
-            <img className="movie__image" alt="Стопкадр к фильму"  src={movie.image}></img>
-            <div className="movie__container">
-            <div className="movie__data">
-                <h2 className="movie__title">33 слова о дизайне</h2>
-                <span className="movie__duration">
-            1 час 10 минут
-            </span>
-                </div>
-                {
-                    isSavedMovie ? 
-                        <button className={deleteButtonClassName} onClick={handleDelete} type="button"></button> :
-                        <button className={likeButtonClassName} onClick={handleLike} type="button"></button>
-                }
-           
-            </div>
-        </li>
-    );
+  return (
+    <li className="movie">
+      <a
+        href={
+          props.movie
+            ? `${props.movie.trailerLink}`
+            : `${props.savedMovie.trailer}`
+        }
+      >
+        <img
+          className="movie__image"
+          alt={
+            props.movie
+              ? `Превью  ${props.movie.title}`
+              : `Превью  ${props.savedMovie.title}`
+          }
+          src={
+            props.movie
+              ? `${IMG_URL}${props.movie.image?.url}`
+              : `${props.savedMovie.image}`
+          }
+        />
+      </a>
+      <div
+        className="movie__container"
+        onMouseEnter={handleCardMouseOver}
+        onMouseLeave={handleCardMouseOut}
+      >
+        <div className="movie__data">
+          <h2 className="movie__title">
+            {props.movie ? props.movie.nameRU : props.savedMovie.nameRU}
+          </h2>
+          <span className="movie__duration">
+            {props.movie
+              ? adoptDuration(props.movie.duration)
+              : adoptDuration(props.savedMovie.duration)}
+          </span>
+        </div>
+        {props.isSavedMovie ? (
+          <button
+            className={likeButtonClassName}
+            onClick={handleLike}
+            type="button"
+          ></button>
+        ) : (
+          <button
+            className={deleteButtonClassName}
+            onClick={handleDelete}
+            type="button"
+          ></button>
+        )}
+      </div>
+    </li>
+  );
 }
 
 export default MoviesCard;

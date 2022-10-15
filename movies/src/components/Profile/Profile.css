@@ -8,6 +8,11 @@
   font-style: normal;
 }
 
+.profile__form {
+  display: flex;
+  flex-direction: column;
+}
+
 .profile__title {
   font-weight: 400;
   font-size: 24px;
@@ -28,16 +33,22 @@
   font-size: 11px;
   line-height: 13px;
   color: #ffffff;
+  min-width: 100px;
+  text-align: right;
 }
 
 .profile__value {
-  font-family: "Inter";
-  font-style: normal;
   font-weight: 400;
-  font-size: 11px;
-  line-height: 13px;
-  text-align: right;
+  font-size: 14px;
+  line-height: 17px;
   color: #ffffff;
+  border: none;
+  border-bottom: 1px solid #424242;
+  padding-bottom: 10px;
+  margin-top: 5px;
+  max-width: 100%;
+  background-color: inherit;
+  text-align: right;
 }
 
 .profile__data:nth-child(3) {
@@ -74,6 +85,36 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.profile__button__submit {
+  width: 410px;
+  height: 45px;
+  background: #3456f3;
+  border-radius: 3px;
+  margin-bottom: 50px;
+}
+
+.profile__error {
+  width: 100%;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #ee3465;
+  height: 17px;
+  overflow: hidden;
+}
+
+.submit__error {
+  width: 100%;
+  margin-top: auto;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 13px;
+  color: #ff004c;
+  overflow: hidden;
 }
 
 @media (max-width: 500px) {

@@ -11,13 +11,15 @@ function SearchForm(props) {
 
 
   return (<section className="search">
-  <form action="" className="search__form">
+  <form onSubmit={props.onSubmit} className="search__form">
     <input
     className="search__input"
-    required
+      required
       type="text"
       placeholder="Фильм"
       name="search-input"
+      onChange={props.onChange}
+      noValidate
     />
     <button
       className="search__button"
@@ -32,7 +34,8 @@ function SearchForm(props) {
         className="search__checkbox"
         type="checkbox"
         checked={isChecked}
-        onChange={handleChange}
+        onClick={handleChange}
+        onChange={props.handleCheck}
       />
       <span className="search__checkbox-slider search__checkbox-round"></span>
       <p className="search__checkbox-variant">Короткометражки</p>
