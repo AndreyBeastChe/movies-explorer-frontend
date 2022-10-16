@@ -134,7 +134,7 @@ class Api {
 }
 
 const mainApi = new Api({
-    url: "http://51.250.65.9"
+    url: "http://api.movies.nomoredomains.sbs"
   });
   
   export default mainApi;
