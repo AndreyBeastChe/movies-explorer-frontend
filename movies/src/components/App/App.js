@@ -1,7 +1,6 @@
 import "./App.css";
 import React from "react";
-import { Route, Switch, Router, useHistory } from "react-router-dom";
-import { createBrowserHistory } from "history";
+import { Route, Switch, useHistory } from "react-router-dom";
 import ProtectedRoute from "../../ProtectedRoute/ProtectedRoute";
 import Main from "../Main/Main";
 import Header from "../Header/Header";
@@ -24,7 +23,6 @@ function App() {
   const ERROR =
     "Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз";
   const EMPTY_RESULT = "Ничего не найдено, попробуйте изменить запрос.";
-  //const history = createBrowserHistory();
   const history = useHistory();
   const [isEditMenuOpen, setEditMenuOpen] = React.useState(false);
   const [searchErr, setSearchErr] = React.useState("");
@@ -53,7 +51,6 @@ function App() {
         });
     } else {
       setLoggedIn(false);
-       history.push('/signin');
     }
   }, [history]);
 
