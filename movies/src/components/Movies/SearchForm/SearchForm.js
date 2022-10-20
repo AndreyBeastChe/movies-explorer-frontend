@@ -2,7 +2,9 @@ import "./SearchForm.css";
 import React, { useState } from "react";
 
 function SearchForm(props) {
-  const [isChecked, setIsChecked] = useState(props.isChecked);
+  console.log (props.searchValue)
+  const [isChecked, setIsChecked] = useState(props.shortMovie);
+  console.log (isChecked)
 
   const handleChange = (e) => {
     setIsChecked(e.target.checked);
@@ -18,6 +20,7 @@ function SearchForm(props) {
           placeholder="Фильм"
           name="search-input"
           onChange={props.onChange}
+          value={props.searchValue}
         />
         <button className="search__button" type="submit" name="search-button">
           Поиск

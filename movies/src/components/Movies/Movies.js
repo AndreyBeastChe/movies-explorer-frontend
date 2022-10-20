@@ -4,13 +4,13 @@ import MoviesCardList from "./MoviesCardList/MoviesCardList";
 
 function Movies(props) {
   return (
-    <main>
       <>
         <SearchForm
           searchValue={props.searchValue}
           onSubmit={props.onSubmit}
           onChange={props.onChange}
           handleCheck={props.handleCheck}
+          shortMovie={props.shortMovie}
         />
         <MoviesCardList
           movies={props.movies}
@@ -20,7 +20,6 @@ function Movies(props) {
           saveMovie={props.saveMovie}
         />
       </>
-    </main>
   );
 }
 

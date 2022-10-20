@@ -1,6 +1,6 @@
 import "./App.css";
 import React from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Switch, useHistory, Redirect,  } from "react-router-dom";
 import ProtectedRoute from "../../ProtectedRoute/ProtectedRoute";
 import Main from "../Main/Main";
 import Header from "../Header/Header";
@@ -26,16 +26,21 @@ function App() {
   const history = useHistory();
   const [isEditMenuOpen, setEditMenuOpen] = React.useState(false);
   const [searchErr, setSearchErr] = React.useState("");
-  const [searchValue, setSearchValue] = React.useState("");
-  const [movies, setMovies] = React.useState("");
-  const [shortMovie, setShortMovie] = React.useState(false);
+  const searchValueStorage = localStorage.getItem("searchValue"); 
+  const [searchValue, setSearchValue] = React.useState(searchValueStorage);
   const [loading, setLoading] = React.useState(false);
+  const moviesStorage = JSON.parse(localStorage.getItem("storedMovies")); 
+  const [movies, setMovies] = React.useState(moviesStorage);
   const savedMoviesStorage = JSON.parse(localStorage.getItem("savedMovies"));
   const [savedMovies, setSavedMovies] = React.useState(savedMoviesStorage);
+  const searchFilterStorage = JSON.parse(localStorage.getItem("shortFilter"));
+  console.log("апп переменная "+ searchFilterStorage)
+  const [shortMovie, setShortMovie] = React.useState(searchFilterStorage);
+  console.log("shortMovie  "+ shortMovie)
   const { handleChange, errors, values, isValid } = Validation();
   const [submitErr, setSubmitErr] = React.useState("");
   const [currentUser, setCurrentUser] = React.useState({});
-  const [loggedIn, setLoggedIn] = React.useState(true);
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
     const jwt = localStorage.getItem("jwt");
@@ -47,14 +52,24 @@ function App() {
           setCurrentUser(res);
         })
         .catch(() => {
-          localStorage.removeItem("jwt");
+          setLoggedIn(false);
+      localStorage.removeItem("jwt");
+      localStorage.removeItem("savedMovies");
+      localStorage.removeItem("foundedMovies");
+      localStorage.removeItem("storedMovies");
         });
-    } else {
+    } 
+    else {
       setLoggedIn(false);
+      localStorage.removeItem("savedMovies");
+      localStorage.removeItem("foundedMovies");
+      localStorage.removeItem("storedMovies");
     }
+  }, []);
+
+  React.useEffect(() => {
   }, [history]);
 
-  React.useEffect(() => {}, [loggedIn]);
 
   function handleMenuClick() {
     setEditMenuOpen(true);
@@ -65,7 +80,13 @@ function App() {
   }
 
   function checkShortMovie(e) {
-    e.target.checked ? setShortMovie(true) : setShortMovie(false);
+    if (e.target.checked ){
+      setShortMovie (true)
+      localStorage.setItem("shortFilter", true)
+    } else {
+      setShortMovie (false)
+      localStorage.setItem("shortFilter", false)
+    }
   }
 
   function handleSearchMovies(e) {
@@ -118,6 +139,7 @@ function App() {
       const foundMovies = allMovies.filter((item) =>
         item.nameRU.toLowerCase().includes(searchValue.toLowerCase())
       );
+      localStorage.setItem("searchValue", searchValue);
 
       if (foundMovies.length === 0) {
         reject(EMPTY_RESULT);
@@ -141,16 +163,14 @@ function App() {
           setLoggedIn(true);
           setCurrentUser(data.username);
           localStorage.setItem("jwt", res.token);
+          history.push("/movies");
         }
       })
       .catch((err) => {
         console.log(`Ошибка ${err}`);
         setSubmitErr(err);
-        console.log(err);
-      })
-      .finally(() => {
         setLoading(false);
-        history.push('/movies');
+        console.log(err);
       });
   };
 
@@ -160,6 +180,7 @@ function App() {
       .then(() => {
         handleLogin(data);
         setCurrentUser(data.name);
+        history.push("/movies");
       })
       .catch((err) => {
         console.log(`Ошибка ${err}`);
@@ -282,18 +303,21 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-          <Switch>
-            <Route exact path="/">
-              {loggedIn ? (
-                <Header onEditMenu={handleMenuClick} />
-              ) : (
-                <HeaderLanding />
-              )}
-              <Main isLoggedIn={loggedIn} />
-              <Footer />
-            </Route>
+        <Switch>
+          <Route exact path="/">
+            {loggedIn ? (
+              <Header onEditMenu={handleMenuClick} />
+            ) : (
+              <HeaderLanding />
+            )}
+            <Main isLoggedIn={loggedIn} />
+            <Footer />
+          </Route>
 
-            <Route path="/signup">
+          <Route path="/signup">
+            {loggedIn ? (
+              <Redirect to="./" />
+            ) : (
               <Register
                 Reg={handleRegister}
                 handleChange={handleChange}
@@ -303,75 +327,80 @@ function App() {
                 values={values}
                 isValid={isValid}
               />
+            )}
+          </Route>
+
+          <Route path="/signin" >
+            {loggedIn ? (
+              <Redirect to="./" />
+            ) : (
+            <Login
+              Log={handleLogin}
+              handleChange={handleChange}
+              loading={loading}
+              submitErr={submitErr}
+              errors={errors}
+              values={values}
+              isValid={isValid}
+            />
+            )}
+          </Route>
+
+          <ProtectedRoute path="/movies" loggedIn={loggedIn}>
+            <Header onEditMenu={handleMenuClick} />
+            <Movies
+              loggedIn={loggedIn}
+              onSubmit={handleSearchMovies}
+              searchErr={searchErr}
+              searchValue={searchValue}
+              movies={movies}
+              onChange={handleSearchInput}
+              handleCheck={checkShortMovie}
+              shortMovie={shortMovie}
+              loading={loading}
+              saveMovie={handleSaveMovie}
+            />
+            <Footer />
+            <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
+          </ProtectedRoute>
+
+          <ProtectedRoute path="/saved-movies" loggedIn={loggedIn}>
+            <Header onEditMenu={handleMenuClick} />
+            <SavedMovies
+              handleCheck={checkShortMovie}
+              savedMovies={savedMovies}
+              onSubmit={handleSearchSavedMovies}
+              deleteMovie={handleDeleteMovie}
+              onChange={handleSearchInput}
+              searchValue={searchValue}
+              shortMovie={shortMovie}
+              searchErr={searchErr}
+              loggedIn={loggedIn}
+            />
+            <Footer />
+            <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
+          </ProtectedRoute>
+
+          <Route path="/profile" loggedIn={loggedIn}>
+            <Header onEditMenu={handleMenuClick} />
+            <Profile
+              loggedIn={!loggedIn}
+              onSubmit={handleEditProfile}
+              handleChange={handleChange}
+              submitErr={submitErr}
+              signOut={handleSignOut}
+              values={values}
+              loading={loading}
+              isValid={isValid}
+              errors={errors}
+            />
+            <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
             </Route>
 
-            <Route path="/signin">
-              <Login
-                Log={handleLogin}
-                handleChange={handleChange}
-                loading={loading}
-                submitErr={submitErr}
-                errors={errors}
-                values={values}
-                isValid={isValid}
-              />
-            </Route>
-
-            <ProtectedRoute path="/movies" loggedIn={loggedIn}>
-              <Header onEditMenu={handleMenuClick} />
-              <Movies
-                loggedIn={loggedIn}
-                onSubmit={handleSearchMovies}
-                searchErr={searchErr}
-                searchValue={searchValue}
-                movies={movies}
-                onChange={handleSearchInput}
-                handleCheck={checkShortMovie}
-                shortMovie={shortMovie}
-                loading={loading}
-                saveMovie={handleSaveMovie}
-              />
-              <Footer />
-              <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
-            </ProtectedRoute>
-
-            <ProtectedRoute path="/saved-movies" loggedIn={loggedIn}>
-              <Header onEditMenu={handleMenuClick} />
-              <SavedMovies
-                handleCheck={checkShortMovie}
-                savedMovies={savedMovies}
-                onSubmit={handleSearchSavedMovies}
-                deleteMovie={handleDeleteMovie}
-                onChange={handleSearchInput}
-                searchValue={searchValue}
-                shortMovie={shortMovie}
-                searchErr={searchErr}
-                loggedIn={loggedIn}
-              />
-              <Footer />
-              <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
-            </ProtectedRoute>
-
-            <ProtectedRoute path="/profile" loggedIn={loggedIn}>
-              <Header onEditMenu={handleMenuClick} />
-              <Profile
-                onSubmit={handleEditProfile}
-                handleChange={handleChange}
-                loggedIn={loggedIn}
-                submitErr={submitErr}
-                signOut={handleSignOut}
-                values={values}
-                loading={loading}
-                isValid={isValid}
-                errors={errors}
-              />
-              <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
-            </ProtectedRoute>
-
-            <Route path="*">
-              <NotFound />
-            </Route>
-          </Switch>
+          <Route path="*">
+            <NotFound />
+          </Route>
+        </Switch>
       </div>
     </CurrentUserContext.Provider>
   );

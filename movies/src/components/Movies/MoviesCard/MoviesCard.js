@@ -2,6 +2,10 @@ import "./MoviesCard.css";
 import React from "react";
 
 function MoviesCard(props) {
+  // const REG = /http(s?):\/\/(www\.)?[0-9a-zA-Z-]+\.[a-zA-Z]+([0-9a-zA-Z-._~:?#[\]@!$&'()*+,;=]+)/;
+  // console.log (props.movie.trailerLink)
+
+  // console.log (props.movie.trailerLink.match(REG))
   const [isLiked, setIsLiked] = React.useState(false);
   const [isDeleteButtonVisible, setIsDeleteButtonVisible] =
     React.useState(false);

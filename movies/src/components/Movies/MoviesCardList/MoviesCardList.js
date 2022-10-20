@@ -6,10 +6,19 @@ import Preloader from "../Preloader/Preloader";
 
 function MoviesCardList(props) {
   const DURATION_SHORT_MOVIE = 40;
-  const [visible, setVisible] = React.useState(12);
+  const WIDE_WIDTH = 5000;
+  const MEDIUM_WIDTH = 768;
+  const NARROW_WIDTH = 480;
+  const TWELVE_ELEMENTS = 12;
+  const EIGHT_ELEMENTS = 8;
+  const FIVE_ELEMENTS = 5;
+  const MORE_THREE_ELEMENTS = 3;
+  const MORE_TWO_ELEMENTS = 2;
+
+  const [visible, setVisible] = React.useState(TWELVE_ELEMENTS);
   const [items, setItems] = React.useState([]);
 
-  const [showMore, setShowMore] = React.useState(3);
+  const [showMore, setShowMore] = React.useState(MORE_THREE_ELEMENTS);
 
   const [dimensions, setDimensions] = React.useState({
     height: window.innerHeight,
@@ -45,19 +54,19 @@ function MoviesCardList(props) {
   React.useEffect(() => {
     props.movies && setItems(props.movies);
 
-    if (dimensions.width <= 5000) {
-      setVisible(12);
-      setShowMore(3);
+    if (dimensions.width <= WIDE_WIDTH) {
+      setVisible(TWELVE_ELEMENTS);
+      setShowMore(MORE_THREE_ELEMENTS);
     }
 
-    if (dimensions.width <= 768 && dimensions.width > 480) {
-      setVisible(8);
-      setShowMore(2);
+    if (dimensions.width <= MEDIUM_WIDTH && dimensions.width > NARROW_WIDTH) {
+      setVisible(EIGHT_ELEMENTS);
+      setShowMore(MORE_TWO_ELEMENTS);
     }
 
-    if (dimensions.width <= 480) {
-      setVisible(5);
-      setShowMore(2);
+    if (dimensions.width <= NARROW_WIDTH) {
+      setVisible(FIVE_ELEMENTS);
+      setShowMore(MORE_TWO_ELEMENTS);
     }
   }, [props.movies, dimensions.width]);
 
@@ -99,7 +108,7 @@ function MoviesCardList(props) {
           ).map((data) => {
             return (
               <MoviesCard
-              isSavedMovie={false}
+                isSavedMovie={false}
                 isInSavedList={props.isInSavedList}
                 key={data._id}
                 savedMovie={data}

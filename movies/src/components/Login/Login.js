@@ -27,7 +27,7 @@ function Login(props) {
       <section className="login">
         <form className="authform" noValidate onSubmit={handleSubmit}>
           <div className="authform__fields">
-            <div className="authform__logo"></div>
+            <Link className="authform__logo" to="/"></Link>
             <h2 className="authform__title">Рады видеть!</h2>
             <label className="authform__label">E-mail</label>
             <input
@@ -53,8 +53,13 @@ function Login(props) {
           </div>
           <div className="authform__submit">
             <span className="authform__submit-error">{errorMessage}</span>
-            <button className="authform__submit-button" type="submit" onSubmit={handleSubmit} disabled={!props.isValid}>
-            {props.isLoading ? "Загрузка" : "Войти"}
+            <button
+              className="authform__submit-button"
+              type="submit"
+              onSubmit={handleSubmit}
+              disabled={!props.isValid}
+            >
+              {props.isLoading ? "Загрузка" : "Войти"}
             </button>
             <div className="authform__link">
               <span className="authform__span">Еще не зарегистрированы?</span>
