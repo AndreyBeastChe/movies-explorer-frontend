@@ -59,6 +59,10 @@
   color: #ffffff;
 }
 
+.header__films-link_active {
+  font-weight: 500;
+}
+
 .header__films-link:hover {
   opacity: 0.8;
 }
@@ -112,7 +116,6 @@
     padding-left: 30px;
     padding-right: 30px;
     max-width: 768px;
-
   }
 
   .header__burger {

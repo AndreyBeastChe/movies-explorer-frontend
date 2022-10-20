@@ -17,12 +17,12 @@ import movieApi from "../../utils/MoviesApi";
 import mainApi from "../../utils/MainApi";
 import Validation from "../../utils/Validation";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
-
+import {
+  EMPTY,
+  ERROR,
+  EMPTY_RESULT
+} from "../../utils/consts"
 function App() {
-  const EMPTY = "Введите запрос";
-  const ERROR =
-    "Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз";
-  const EMPTY_RESULT = "Ничего не найдено, попробуйте изменить запрос.";
   const history = useHistory();
   const [isEditMenuOpen, setEditMenuOpen] = React.useState(false);
   const [searchErr, setSearchErr] = React.useState("");
@@ -34,9 +34,7 @@ function App() {
   const savedMoviesStorage = JSON.parse(localStorage.getItem("savedMovies"));
   const [savedMovies, setSavedMovies] = React.useState(savedMoviesStorage);
   const searchFilterStorage = JSON.parse(localStorage.getItem("shortFilter"));
-  console.log("апп переменная "+ searchFilterStorage)
   const [shortMovie, setShortMovie] = React.useState(searchFilterStorage);
-  console.log("shortMovie  "+ shortMovie)
   const { handleChange, errors, values, isValid } = Validation();
   const [submitErr, setSubmitErr] = React.useState("");
   const [currentUser, setCurrentUser] = React.useState({});
@@ -57,13 +55,19 @@ function App() {
       localStorage.removeItem("savedMovies");
       localStorage.removeItem("foundedMovies");
       localStorage.removeItem("storedMovies");
+      localStorage.removeItem("searchValue");
+      localStorage.removeItem("shortFilter");
+
         });
     } 
     else {
       setLoggedIn(false);
+      localStorage.removeItem("jwt");
       localStorage.removeItem("savedMovies");
       localStorage.removeItem("foundedMovies");
       localStorage.removeItem("storedMovies");
+      localStorage.removeItem("searchValue");
+      localStorage.removeItem("shortFilter");
     }
   }, []);
 
@@ -178,6 +182,7 @@ function App() {
     mainApi
       .register(data.name, data.email, data.password)
       .then(() => {
+        setLoggedIn(true);
         handleLogin(data);
         setCurrentUser(data.name);
         history.push("/movies");
@@ -312,6 +317,7 @@ function App() {
             )}
             <Main isLoggedIn={loggedIn} />
             <Footer />
+            <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
           </Route>
 
           <Route path="/signup">

@@ -68,7 +68,7 @@ const errorMessage = errorStatus(props.submitErr)
         <div className="authform__submit">
           <span className="authform__submit-error">{errorMessage}</span>
           <button className="authform__submit-button" type="submit" onSubmit={handleSubmit} disabled={!props.isValid}>
-          {props.isLoading ? "Загрузка" : "Зарегистрироваться"}
+          {props.loading ? "Загрузка" : "Зарегистрироваться"}
           </button>
           <div className="authform__link">
             <span className="authform__span">Уже зарегистрированы?</span>

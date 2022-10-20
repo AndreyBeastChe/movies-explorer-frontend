@@ -59,7 +59,7 @@ function Login(props) {
               onSubmit={handleSubmit}
               disabled={!props.isValid}
             >
-              {props.isLoading ? "Загрузка" : "Войти"}
+              {props.loading ? "Загрузка" : "Войти"}
             </button>
             <div className="authform__link">
               <span className="authform__span">Еще не зарегистрированы?</span>

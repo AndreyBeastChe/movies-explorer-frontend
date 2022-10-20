@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./Navigation.css";
 import profile from "../../images/profile.svg";
 
@@ -13,15 +13,15 @@ function Navigation(props) {
             onClick={props.onClose}
             type="button"
           ></button>
-          <Link to="/" className="navigation__link">
+          <NavLink exact activeClassName="navigation__link_active" to="/" className="navigation__link">
             Главная
-          </Link>
-          <Link to="/movies" className="navigation__link">
+          </NavLink>
+          <NavLink exact activeClassName="navigation__link_active" to="/movies" className="navigation__link">
             Фильмы
-          </Link>
-          <Link to="/saved-movies" className="navigation__link">
+          </NavLink>
+          <NavLink exact activeClassName="navigation__link_active" to="/saved-movies" className="navigation__link">
             Сохранённые фильмы
-          </Link>
+          </NavLink>
         </div>
         <div className="navigation__profile">
           <a href="/profile" className="navigation__profile-button">
