@@ -2,9 +2,7 @@ import "./SearchForm.css";
 import React, { useState } from "react";
 
 function SearchForm(props) {
-  console.log (props.searchValue)
   const [isChecked, setIsChecked] = useState(props.shortMovie);
-  console.log (isChecked)
 
   const handleChange = (e) => {
     setIsChecked(e.target.checked);

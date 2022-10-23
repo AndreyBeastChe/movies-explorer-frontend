@@ -1,15 +1,28 @@
 import React from "react";
 import "./Profile.css";
+import Popup from "../Popup/Popup";
 import { CurrentUserContext } from "../..//context/CurrentUserContext";
 
 function Profile(props) {
   const currentUser = React.useContext(CurrentUserContext);
   const [edit, setEdit] = React.useState(false);
+  const [name, setName] = React.useState(currentUser.name);
+  const [email, setEmail] = React.useState(currentUser.email);
+  const [disabledButton, setDisabledButton] = React.useState(false);
+  const [popupOpen, setPopupOpen] = React.useState(false);
+
+
+  function handleChange(e) {
+    const value = e.target.value;
+      e.target.name === "name" ? setName(value) : setEmail(value);
+      props.handleChange(e)
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.onSubmit(props.values, setEdit);
+    props.onSubmit(props.values, setEdit, setPopupOpen);
   };
+
 
   const enableEditProfile = () => {
     setEdit(true);
@@ -26,6 +39,38 @@ function Profile(props) {
 
   const errorMessage = errorStatus(props.submitErr);
 
+  React.useEffect(() => {
+    if (edit) {
+      setName(props.values.name);
+      setEmail(props.values.email);
+    } else {
+      setName(currentUser.name);
+      setEmail(currentUser.email);
+    }
+  }, [edit]);
+  
+
+  React.useEffect(() => {
+    validationSameValue()
+  }, [name, email]);
+
+
+  function validationSameValue() {
+    if ((name === currentUser.name) || (email === currentUser.email) ){
+      setDisabledButton(true)
+    }
+    else {
+      !props.isValid ?
+      (setDisabledButton(true))
+    :
+      (setDisabledButton(false))
+    }
+  }
+
+  const closePopup = () => {
+    setPopupOpen(false);
+};
+
   return (
     <section className="profile">
       <h2 className="profile__title">{`Привет, ${currentUser.name}!`}</h2>
@@ -40,10 +85,9 @@ function Profile(props) {
             type="text"
             name="name"
             id="name"
-            placeholder={currentUser.name}
-            onChange={props.handleChange}
+            value={name}
+            onChange={handleChange}
             disabled={!edit}
-            value={props.values.name}
           ></input>
           <span className="profile__error">{props.errors.name}</span>
         </div>
@@ -57,10 +101,9 @@ function Profile(props) {
             type="text"
             name="email"
             id="email"
-            placeholder={currentUser.email}
-            onChange={props.handleChange}
+            value={email}
+            onChange={handleChange}
             disabled={!edit}
-            value={props.values.email}
           ></input>
           <span className="profile__error">{props.errors.email}</span>
           <span className="submit__error">{errorMessage}</span>
@@ -70,7 +113,7 @@ function Profile(props) {
           <button
             className="profile__button profile__button__submit"
             type="submit"
-            disabled={!props.isValid}
+            disabled={disabledButton}
           >
             {props.isLoading ? "Сохранение" : "Сохранить"}
           </button>
@@ -86,18 +129,22 @@ function Profile(props) {
             <button
               className="profile__logout-button"
               type="button"
-              onClick={props.signOut}
+              onClick={setPopupOpen}
             >
               Выйти из аккаунта
             </button>
           </div>
         )}
       </form>
+      <Popup
+                    isOpen={popupOpen}
+                    onClose={closePopup}
+                    onSubmit={props.signOut}
+                    title="Вы уверены?"
+                    buttonName="Да, выйти"
+                />
     </section>
   );
 }
 
 export default Profile;
-
-
-

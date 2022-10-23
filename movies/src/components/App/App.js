@@ -1,6 +1,6 @@
 import "./App.css";
 import React from "react";
-import { Route, Switch, useHistory, Redirect,  } from "react-router-dom";
+import { Route, Switch, useHistory, Redirect, useLocation } from "react-router-dom";
 import ProtectedRoute from "../../ProtectedRoute/ProtectedRoute";
 import Main from "../Main/Main";
 import Header from "../Header/Header";
@@ -23,7 +23,9 @@ import {
   EMPTY_RESULT
 } from "../../utils/consts"
 function App() {
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const history = useHistory();
+  const location = useLocation().pathname;
   const [isEditMenuOpen, setEditMenuOpen] = React.useState(false);
   const [searchErr, setSearchErr] = React.useState("");
   const searchValueStorage = localStorage.getItem("searchValue"); 
@@ -38,40 +40,39 @@ function App() {
   const { handleChange, errors, values, isValid } = Validation();
   const [submitErr, setSubmitErr] = React.useState("");
   const [currentUser, setCurrentUser] = React.useState({});
-  const [loggedIn, setLoggedIn] = React.useState(false);
+  const REG = /http(s?):\/\/(www\.)?[0-9a-zA-Z-]+\.[a-zA-Z]+([0-9a-zA-Z-._~:?#[\]@!$&'()*+,;=]+)/;
+
+
+
+
+
+function handleCheckToken() {
+  const jwt = localStorage.getItem("jwt");
+  if (jwt) {
+    mainApi
+      .checkToken(jwt)
+      .then((res) => {
+        setLoggedIn(true);
+        setCurrentUser(res);
+        history.push(location)
+
+      })
+      .catch((res) => {
+        setLoggedIn(false);
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("savedMovies");
+    localStorage.removeItem("foundedMovies");
+    localStorage.removeItem("storedMovies");
+    localStorage.removeItem("searchValue");
+    localStorage.removeItem("shortFilter");
+
+      });
+  }
+} 
 
   React.useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      mainApi
-        .checkToken(jwt)
-        .then((res) => {
-          setLoggedIn(true);
-          setCurrentUser(res);
-        })
-        .catch(() => {
-          setLoggedIn(false);
-      localStorage.removeItem("jwt");
-      localStorage.removeItem("savedMovies");
-      localStorage.removeItem("foundedMovies");
-      localStorage.removeItem("storedMovies");
-      localStorage.removeItem("searchValue");
-      localStorage.removeItem("shortFilter");
-
-        });
-    } 
-    else {
-      setLoggedIn(false);
-      localStorage.removeItem("jwt");
-      localStorage.removeItem("savedMovies");
-      localStorage.removeItem("foundedMovies");
-      localStorage.removeItem("storedMovies");
-      localStorage.removeItem("searchValue");
-      localStorage.removeItem("shortFilter");
-    }
-  }, []);
-
-  React.useEffect(() => {
+    handleCheckToken()
+    
   }, [history]);
 
 
@@ -103,6 +104,12 @@ function App() {
       movieApi
         .getMovies()
         .then((data) => {
+          data.forEach(item => {
+            if (item.trailerLink.match(REG) === null) {
+              console.log(item.trailerLink)
+              item.trailerLink = "https://www.youtube.com/watch?v=5BZLz21ZS_Y"
+           }
+          });
           localStorage.setItem("foundedMovies", JSON.stringify(data));
           findMovie(data)
             .then(() => {})
@@ -139,8 +146,7 @@ function App() {
       if (!allMovies) {
         return reject(ERROR);
       }
-
-      const foundMovies = allMovies.filter((item) =>
+      const foundMovies = allMovies.filter((item) => 
         item.nameRU.toLowerCase().includes(searchValue.toLowerCase())
       );
       localStorage.setItem("searchValue", searchValue);
@@ -307,7 +313,7 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="page">
+      {/* <div className="page"> */}
         <Switch>
           <Route exact path="/">
             {loggedIn ? (
@@ -315,7 +321,7 @@ function App() {
             ) : (
               <HeaderLanding />
             )}
-            <Main isLoggedIn={loggedIn} />
+            <Main />
             <Footer />
             <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
           </Route>
@@ -355,7 +361,6 @@ function App() {
           <ProtectedRoute path="/movies" loggedIn={loggedIn}>
             <Header onEditMenu={handleMenuClick} />
             <Movies
-              loggedIn={loggedIn}
               onSubmit={handleSearchMovies}
               searchErr={searchErr}
               searchValue={searchValue}
@@ -381,13 +386,12 @@ function App() {
               searchValue={searchValue}
               shortMovie={shortMovie}
               searchErr={searchErr}
-              loggedIn={loggedIn}
             />
             <Footer />
             <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
           </ProtectedRoute>
 
-          <Route path="/profile" loggedIn={loggedIn}>
+          <ProtectedRoute path="/profile" loggedIn={loggedIn}>
             <Header onEditMenu={handleMenuClick} />
             <Profile
               loggedIn={!loggedIn}
@@ -401,13 +405,13 @@ function App() {
               errors={errors}
             />
             <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
-            </Route>
+            </ProtectedRoute>
 
           <Route path="*">
             <NotFound />
           </Route>
         </Switch>
-      </div>
+      {/* </div> */}
     </CurrentUserContext.Provider>
   );
 }

@@ -50,11 +50,16 @@
   background-color: inherit;
   text-align: right;
   min-width: 300px;
+  outline: none;
 }
 
-.profile__data:nth-child(3) {
+/* .profile__data:last-of-type {
+  margin-bottom: 220px;
+} */
+
+/* .profile__data:nth-child(3) {
   border-top: 1px solid #424242;
-}
+} */
 
 .profile__edit-button {
   font-weight: 400;
@@ -65,7 +70,8 @@
   margin-top: auto;
   background-color: transparent;
   border: none;
-  margin: 220px 0 16px;
+  margin: 0 0 16px;
+  padding-top: 220px ;
 }
 
 .profile__logout-button {
@@ -96,6 +102,11 @@
   background: #3456f3;
   border-radius: 3px;
   margin-top: 50px;
+}
+
+.profile__button__submit:disabled {
+  background: #F8F8F8;
+  color: #C2C2C2;
 }
 
 .profile__error {

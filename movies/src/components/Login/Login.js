@@ -37,6 +37,7 @@ function Login(props) {
               name="email"
               onChange={props.handleChange}
               value={props.values.email}
+              pattern='^[^ ]+@[^ ]+\.[a-z]{2,3}$'
             ></input>
             <span className="authform__error">{props.errors.email}</span>
             <label className="authform__label">Пароль</label>

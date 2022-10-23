@@ -12,11 +12,11 @@ import {
   EIGHT_ELEMENTS,
   FIVE_ELEMENTS,
   MORE_THREE_ELEMENTS,
-  MORE_TWO_ELEMENTS
-} from "../../../utils/consts"
+  MORE_TWO_ELEMENTS,
+  MORE_ONE_ELEMENTS,
+} from "../../../utils/consts";
 
 function MoviesCardList(props) {
-
   const [visible, setVisible] = React.useState(TWELVE_ELEMENTS);
   const [items, setItems] = React.useState([]);
 
@@ -68,7 +68,7 @@ function MoviesCardList(props) {
 
     if (dimensions.width <= NARROW_WIDTH) {
       setVisible(FIVE_ELEMENTS);
-      setShowMore(MORE_TWO_ELEMENTS);
+      setShowMore(MORE_ONE_ELEMENTS);
     }
   }, [props.movies, dimensions.width]);
 
@@ -83,42 +83,41 @@ function MoviesCardList(props) {
   return (
     <section className="movies">
       {props.loading && <Preloader />}
-      {props.searchError !== "" && (
+
+      {props.searchErr !== "" ? (
         <span className="movies__error">{props.searchErr}</span>
-      )}
-      {props.savedMovies?.length === 0 && (
-        <span className="movies__error">Нет сохраненных фильмов</span>
-      )}
-      <ul className="movies__list">
-        {props.movies &&
-          (props.shortMovie ? filterShortMovie(items) : items)
-            .slice(0, visible)
-            .map((data) => {
+      ) : (
+        <ul className="movies__list">
+          {props.movies &&
+            (props.shortMovie ? filterShortMovie(items) : items)
+              .slice(0, visible)
+              .map((data) => {
+                return (
+                  <MoviesCard
+                    saveMovie={props.saveMovie}
+                    isSavedMovie={true}
+                    movie={data}
+                    key={data.id}
+                  />
+                );
+              })}
+          {props.savedMovies &&
+            (props.isShortMovie
+              ? filterShortMovie(props.savedMovies)
+              : props.savedMovies
+            ).map((data) => {
               return (
                 <MoviesCard
-                  saveMovie={props.saveMovie}
-                  isSavedMovie={true}
-                  movie={data}
-                  key={data.id}
+                  isSavedMovie={false}
+                  isInSavedList={props.isInSavedList}
+                  key={data._id}
+                  savedMovie={data}
+                  deleteMovie={props.deleteMovie}
                 />
               );
             })}
-        {props.savedMovies &&
-          (props.isShortMovie
-            ? filterShortMovie(props.savedMovies)
-            : props.savedMovies
-          ).map((data) => {
-            return (
-              <MoviesCard
-                isSavedMovie={false}
-                isInSavedList={props.isInSavedList}
-                key={data._id}
-                savedMovie={data}
-                deleteMovie={props.deleteMovie}
-              />
-            );
-          })}
-      </ul>
+        </ul>
+      )}
       {props.movies && items.length > visible && (
         <MoreResuls showMoreClick={showMoreItems} />
       )}

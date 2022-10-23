@@ -1,8 +1,11 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 
 function ProtectedRoute({ children, loggedIn }) {
-  return loggedIn ? children : <Redirect to="./" />;
+  return (<Route> 
+    {() => loggedIn ? children : <Redirect to="./"/>}
+  </Route>)
+  //return loggedIn ? children : <Redirect to="./" />;
 }
 
 export default ProtectedRoute;

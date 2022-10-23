@@ -1,6 +1,8 @@
 import "./Register.css";
 import { Link } from "react-router-dom";
 
+
+
 function Register(props) {
 
   const handleSubmit = (e) => {
@@ -50,6 +52,7 @@ const errorMessage = errorStatus(props.submitErr)
             name="email"
             value={props.values.email}
             onChange={props.handleChange}
+            pattern='^[^ ]+@[^ ]+\.[a-z]{2,3}$'
           ></input>
           <span className="authform__error">{props.errors.email}</span>
 
