@@ -5,14 +5,14 @@ function SavedMovies(props) {
   return (
     <>
       <SearchForm
-        searchValue={props.searchValue}
+        searchValueSavedMovie={props.searchValueSavedMovie}
         onSubmit={props.onSubmit}
         onChange={props.onChange}
         handleCheck={props.handleCheck}
+        shortMovie={props.shortMovie}
       />
       <MoviesCardList
-        movies={props.movies}
-        shortMovie={props.shortMovie}
+        shortMovie={props.shortMovieSavedMovie}
         loading={props.loading}
         searchErr={props.searchErr}
         deleteMovie={props.deleteMovie}

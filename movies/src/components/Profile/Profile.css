@@ -23,8 +23,14 @@
 .profile__data {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   width: 410px;
-  border-bottom: 1px solid #424242;
+  
+}
+
+.profile__data:last-of-type {
+  border-top: 1px solid #424242;
+  padding-top: 16px;
 }
 
 .profile__firld {
@@ -52,14 +58,6 @@
   min-width: 300px;
   outline: none;
 }
-
-/* .profile__data:last-of-type {
-  margin-bottom: 220px;
-} */
-
-/* .profile__data:nth-child(3) {
-  border-top: 1px solid #424242;
-} */
 
 .profile__edit-button {
   font-weight: 400;

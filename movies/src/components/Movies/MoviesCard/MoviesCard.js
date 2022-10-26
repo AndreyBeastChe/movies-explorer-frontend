@@ -2,19 +2,25 @@ import "./MoviesCard.css";
 import React from "react";
 
 function MoviesCard(props) {
-
   const [isLiked, setIsLiked] = React.useState(false);
   const [isDeleteButtonVisible, setIsDeleteButtonVisible] =
     React.useState(false);
-  const likeButtonClassName = `movie__like-button ${
+  const likeButton = `movie__like-button ${
     isLiked ? "movie__like-button_active" : ""
   }`;
   const deleteButtonClassName = `movie__delete-button ${
     isDeleteButtonVisible ? "movie__delete-button_active" : ""
   }`;
   const IMG_URL = "https://api.nomoreparties.co/";
-  const savedMoviesStorage = JSON.parse(localStorage.getItem("savedMovies"));
+  const savedMovies = JSON.parse(localStorage.getItem("savedMovies"));
 
+  React.useEffect(() => {
+    if (props.movie) {
+      savedMovies?.some((i) => i.movieId === props.movie.id)
+        ? setIsLiked(true)
+        : setIsLiked(false);
+    }
+  }, [props.movie, savedMovies]);
 
   function handleCardMouseOver() {
     setIsDeleteButtonVisible(true);
@@ -25,7 +31,7 @@ function MoviesCard(props) {
   }
 
   const handleLike = () => {
-    props.saveMovie(props.movie, isLiked, setIsLiked);
+    props.addsaveMovie(props.movie, isLiked, setIsLiked);
   };
 
   const handleDelete = () => {
@@ -36,13 +42,7 @@ function MoviesCard(props) {
     return `${Math.floor(min / 60) % 24} ч ${min % 60} минут`;
   };
 
-  React.useEffect(() => {
-    if (props.movie) {
-        savedMoviesStorage?.some((i) => i.movieId === props.movie.id)
-        ? setIsLiked(true)
-        : setIsLiked(false);
-    }
-  }, [props.movie, savedMoviesStorage]);
+
 
   return (
     <li className="movie">
@@ -84,7 +84,7 @@ function MoviesCard(props) {
         </div>
         {props.isSavedMovie ? (
           <button
-            className={likeButtonClassName}
+            className={likeButton}
             onClick={handleLike}
             type="button"
           ></button>

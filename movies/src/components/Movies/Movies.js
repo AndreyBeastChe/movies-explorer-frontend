@@ -17,7 +17,7 @@ function Movies(props) {
           shortMovie={props.shortMovie}
           loading={props.loading}
           searchErr={props.searchErr}
-          saveMovie={props.saveMovie}
+          addsaveMovie={props.addsaveMovie}
         />
       </>
   );

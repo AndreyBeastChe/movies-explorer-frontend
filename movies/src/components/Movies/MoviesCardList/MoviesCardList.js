@@ -27,6 +27,11 @@ function MoviesCardList(props) {
     width: window.innerWidth,
   });
 
+  function filterShortMovie(movie) {
+    debugger
+    return movie.filter((m) => m.duration <= DURATION_SHORT_MOVIE);
+  }
+
   function debounce(fn, ms) {
     let timer;
     return (_) => {
@@ -72,9 +77,6 @@ function MoviesCardList(props) {
     }
   }, [props.movies, dimensions.width]);
 
-  function filterShortMovie(movie) {
-    return movie.filter((m) => m.duration <= DURATION_SHORT_MOVIE);
-  }
 
   const showMoreItems = () => {
     setVisible((prevValue) => prevValue + showMore);
@@ -94,22 +96,22 @@ function MoviesCardList(props) {
               .map((data) => {
                 return (
                   <MoviesCard
-                    saveMovie={props.saveMovie}
+                    //saveMovie={props.savedMovie}
                     isSavedMovie={true}
                     movie={data}
                     key={data.id}
+                    addsaveMovie={props.addsaveMovie}
                   />
                 );
               })}
           {props.savedMovies &&
-            (props.isShortMovie
-              ? filterShortMovie(props.savedMovies)
-              : props.savedMovies
+            (props.shortMovie
+               ? filterShortMovie(props.savedMovies)
+               : props.savedMovies
             ).map((data) => {
-              return (
+               return (
                 <MoviesCard
                   isSavedMovie={false}
-                  isInSavedList={props.isInSavedList}
                   key={data._id}
                   savedMovie={data}
                   deleteMovie={props.deleteMovie}

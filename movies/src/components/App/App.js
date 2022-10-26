@@ -1,6 +1,12 @@
 import "./App.css";
 import React from "react";
-import { Route, Switch, useHistory, Redirect, useLocation } from "react-router-dom";
+import {
+  Route,
+  Switch,
+  useHistory,
+  Redirect,
+  useLocation,
+} from "react-router-dom";
 import ProtectedRoute from "../../ProtectedRoute/ProtectedRoute";
 import Main from "../Main/Main";
 import Header from "../Header/Header";
@@ -17,64 +23,62 @@ import movieApi from "../../utils/MoviesApi";
 import mainApi from "../../utils/MainApi";
 import Validation from "../../utils/Validation";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
-import {
-  EMPTY,
-  ERROR,
-  EMPTY_RESULT
-} from "../../utils/consts"
+import { EMPTY, ERROR, EMPTY_RESULT } from "../../utils/consts";
 function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const history = useHistory();
   const location = useLocation().pathname;
   const [isEditMenuOpen, setEditMenuOpen] = React.useState(false);
   const [searchErr, setSearchErr] = React.useState("");
-  const searchValueStorage = localStorage.getItem("searchValue"); 
+  const searchValueStorage = localStorage.getItem("searchValue");
   const [searchValue, setSearchValue] = React.useState(searchValueStorage);
+  const [searchValueSavedMovie, setsearchValueSavedMovie] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const moviesStorage = JSON.parse(localStorage.getItem("storedMovies")); 
+  const moviesStorage = JSON.parse(localStorage.getItem("storedMovies"));
   const [movies, setMovies] = React.useState(moviesStorage);
   const savedMoviesStorage = JSON.parse(localStorage.getItem("savedMovies"));
   const [savedMovies, setSavedMovies] = React.useState(savedMoviesStorage);
   const searchFilterStorage = JSON.parse(localStorage.getItem("shortFilter"));
   const [shortMovie, setShortMovie] = React.useState(searchFilterStorage);
+  const [shortMovieSavedMovie, setShortMovieSavedMovie] = React.useState(false);
   const { handleChange, errors, values, isValid } = Validation();
   const [submitErr, setSubmitErr] = React.useState("");
   const [currentUser, setCurrentUser] = React.useState({});
-  const REG = /http(s?):\/\/(www\.)?[0-9a-zA-Z-]+\.[a-zA-Z]+([0-9a-zA-Z-._~:?#[\]@!$&'()*+,;=]+)/;
+  const REG =
+    /http(s?):\/\/(www\.)?[0-9a-zA-Z-]+\.[a-zA-Z]+([0-9a-zA-Z-._~:?#[\]@!$&'()*+,;=]+)/;
 
+  const [checkbox, setCheckbox] = React.useState(false);
 
-
-
-
-function handleCheckToken() {
-  const jwt = localStorage.getItem("jwt");
-  if (jwt) {
-    mainApi
-      .checkToken(jwt)
-      .then((res) => {
-        setLoggedIn(true);
-        setCurrentUser(res);
-        history.push(location)
-
-      })
-      .catch((res) => {
-        setLoggedIn(false);
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("savedMovies");
-    localStorage.removeItem("foundedMovies");
-    localStorage.removeItem("storedMovies");
-    localStorage.removeItem("searchValue");
-    localStorage.removeItem("shortFilter");
-
-      });
+  function handleCheckToken() {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      mainApi
+        .checkToken(jwt)
+        .then((res) => {
+          setLoggedIn(true);
+          setCurrentUser(res);
+          history.push(location);
+        })
+        .catch((res) => {
+          setLoggedIn(false);
+          localStorage.removeItem("jwt");
+          localStorage.removeItem("savedMovies");
+          localStorage.removeItem("foundedMovies");
+          localStorage.removeItem("storedMovies");
+          localStorage.removeItem("searchValue");
+          localStorage.removeItem("shortFilter");
+        });
+    }
   }
-} 
 
   React.useEffect(() => {
-    handleCheckToken()
-    
-  }, [history]);
+    setSearchErr("");
+    setSavedMovies(savedMoviesStorage)
+  }, [location]);
 
+  React.useEffect(() => {
+    handleCheckToken();
+  }, [history]);
 
   function handleMenuClick() {
     setEditMenuOpen(true);
@@ -85,12 +89,10 @@ function handleCheckToken() {
   }
 
   function checkShortMovie(e) {
-    if (e.target.checked ){
-      setShortMovie (true)
-      localStorage.setItem("shortFilter", true)
+    if (e.target.checked) {
+      setCheckbox(true);
     } else {
-      setShortMovie (false)
-      localStorage.setItem("shortFilter", false)
+      setCheckbox(false);
     }
   }
 
@@ -104,13 +106,22 @@ function handleCheckToken() {
       movieApi
         .getMovies()
         .then((data) => {
-          data.forEach(item => {
+          data.forEach((item) => {
             if (item.trailerLink.match(REG) === null) {
-              console.log(item.trailerLink)
-              item.trailerLink = "https://www.youtube.com/watch?v=5BZLz21ZS_Y"
-           }
+              item.trailerLink = "https://www.youtube.com/watch?v=5BZLz21ZS_Y";
+            }
           });
           localStorage.setItem("foundedMovies", JSON.stringify(data));
+          localStorage.setItem("searchValue", searchValue);
+          localStorage.setItem("storedMovies", JSON.stringify(data));
+          if (checkbox) {
+            localStorage.setItem("shortFilter", true);
+            setShortMovie(true);
+          } else {
+            localStorage.setItem("shortFilter", false);
+            setShortMovie(true);
+          }
+
           findMovie(data)
             .then(() => {})
             .catch((err) => {
@@ -146,19 +157,33 @@ function handleCheckToken() {
       if (!allMovies) {
         return reject(ERROR);
       }
-      const foundMovies = allMovies.filter((item) => 
+      const foundMovies = allMovies.filter((item) =>
         item.nameRU.toLowerCase().includes(searchValue.toLowerCase())
       );
-      localStorage.setItem("searchValue", searchValue);
 
       if (foundMovies.length === 0) {
         reject(EMPTY_RESULT);
       }
-      localStorage.setItem("storedMovies", JSON.stringify(foundMovies));
       setMovies(foundMovies);
+      localStorage.setItem("storedMovies", JSON.stringify(foundMovies));
+      localStorage.setItem("searchValue", searchValue);
+      if (checkbox) {
+        localStorage.setItem("shortFilter", true);
+        setShortMovie(true);
+      } else {
+        localStorage.setItem("shortFilter", false);
+        setShortMovie(false);
+      }
       resolve();
     });
   }
+
+ 
+  function  handleSearchInputSave(e) {
+    const { value } = e.target;
+    setsearchValueSavedMovie(value);
+  }
+
 
   function handleSearchInput(e) {
     const { value } = e.target;
@@ -175,6 +200,12 @@ function handleCheckToken() {
           localStorage.setItem("jwt", res.token);
           history.push("/movies");
         }
+      })
+      .then(() => {
+        mainApi.getSavedMovies().then((res) => {
+          setSavedMovies(res);
+          localStorage.setItem("savedMovies", JSON.stringify(res));
+        });
       })
       .catch((err) => {
         console.log(`Ошибка ${err}`);
@@ -211,10 +242,13 @@ function handleCheckToken() {
           Promise.resolve(res.find((i) => i.movieId === movie.id)).then(
             (movieId) => {
               mainApi.deleteMovie(movieId._id).then(() => {
-                const newMovies = savedMovies.filter(
+                const moviesUpdated = savedMovies.filter(
                   (m) => m._id !== movieId._id
                 );
-                localStorage.setItem("savedMovies", JSON.stringify(newMovies));
+                localStorage.setItem(
+                  "savedMovies",
+                  JSON.stringify(moviesUpdated)
+                );
                 const movies = JSON.parse(localStorage.getItem("savedMovies"));
                 setSavedMovies(movies);
                 setIsLiked(false);
@@ -225,18 +259,18 @@ function handleCheckToken() {
 
         .catch((err) => console.log(err));
     } else {
-      setIsLiked(true);
       mainApi
         .saveMovie(movie)
-        .then(() => {
-          mainApi.getSavedMovies().then((res) => {
-            localStorage.setItem("savedMovies", JSON.stringify(res));
-            const movies = JSON.parse(localStorage.getItem("savedMovies"));
-            setSavedMovies(movies);
-            setIsLiked(true);
-          });
+        .then((res) => {
+            console.log(res)
+          const movies = JSON.parse(localStorage.getItem("savedMovies"));
+          movies.push(res);
+          localStorage.setItem("savedMovies", JSON.stringify(movies));
+          setSavedMovies(movies);
+          console.log(movies);
+          setIsLiked(true);
         })
-        .catch((err) => console.log(err));
+        .catch(() => setIsLiked(false));
     }
   }
 
@@ -254,36 +288,26 @@ function handleCheckToken() {
 
   function handleSearchSavedMovies(e) {
     e.preventDefault();
-    setLoading(true);
     setSearchErr("");
-    setSavedMovies(savedMoviesStorage);
-    mainApi
-      .getSavedMovies()
-      .then((data) => {
-        if (searchValue === "") {
-          throw new Error(EMPTY);
-        }
-        if (!data) {
-          throw new Error(ERROR);
-        }
+    const movies = JSON.parse(localStorage.getItem("savedMovies"));
+    const foundedData = movies.filter((item) =>
+      item.nameRU.toLowerCase().includes(searchValueSavedMovie.toLowerCase())
+    );
+    if (searchValueSavedMovie === "") {
+      setSearchErr(EMPTY);
+       return
+    }
+    if (foundedData.length === 0) {
+      setSearchErr(EMPTY_RESULT);
+    }
 
-        const foundedData = data.filter((item) =>
-          item.nameRU.toLowerCase().includes(searchValue.toLowerCase())
-        );
-        if (foundedData.length === 0) {
-          throw new Error(EMPTY_RESULT);
-        }
+    setSavedMovies(foundedData);
 
-        setSavedMovies(foundedData);
-      })
-
-      .catch((err) => {
-        console.log(err);
-        setSearchErr(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (checkbox) {
+      setShortMovieSavedMovie(true);
+    } else {
+      setShortMovieSavedMovie(false);
+    }
   }
 
   function handleEditProfile(data, setIsEditable) {
@@ -308,44 +332,45 @@ function handleCheckToken() {
     localStorage.removeItem("savedMovies");
     localStorage.removeItem("foundedMovies");
     localStorage.removeItem("storedMovies");
+    localStorage.removeItem("searchValue");
+    localStorage.removeItem("shortFilter");
     history.push("/");
   }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      {/* <div className="page"> */}
-        <Switch>
-          <Route exact path="/">
-            {loggedIn ? (
-              <Header onEditMenu={handleMenuClick} />
-            ) : (
-              <HeaderLanding />
-            )}
-            <Main />
-            <Footer />
-            <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
-          </Route>
+      <Switch>
+        <Route exact path="/">
+          {loggedIn ? (
+            <Header onEditMenu={handleMenuClick} />
+          ) : (
+            <HeaderLanding />
+          )}
+          <Main />
+          <Footer />
+          <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
+        </Route>
 
-          <Route path="/signup">
-            {loggedIn ? (
-              <Redirect to="./" />
-            ) : (
-              <Register
-                Reg={handleRegister}
-                handleChange={handleChange}
-                submitErr={submitErr}
-                errors={errors}
-                loading={loading}
-                values={values}
-                isValid={isValid}
-              />
-            )}
-          </Route>
+        <Route path="/signup">
+          {loggedIn ? (
+            <Redirect to="./" />
+          ) : (
+            <Register
+              Reg={handleRegister}
+              handleChange={handleChange}
+              submitErr={submitErr}
+              errors={errors}
+              loading={loading}
+              values={values}
+              isValid={isValid}
+            />
+          )}
+        </Route>
 
-          <Route path="/signin" >
-            {loggedIn ? (
-              <Redirect to="./" />
-            ) : (
+        <Route path="/signin">
+          {loggedIn ? (
+            <Redirect to="./" />
+          ) : (
             <Login
               Log={handleLogin}
               handleChange={handleChange}
@@ -355,63 +380,62 @@ function handleCheckToken() {
               values={values}
               isValid={isValid}
             />
-            )}
-          </Route>
+          )}
+        </Route>
 
-          <ProtectedRoute path="/movies" loggedIn={loggedIn}>
-            <Header onEditMenu={handleMenuClick} />
-            <Movies
-              onSubmit={handleSearchMovies}
-              searchErr={searchErr}
-              searchValue={searchValue}
-              movies={movies}
-              onChange={handleSearchInput}
-              handleCheck={checkShortMovie}
-              shortMovie={shortMovie}
-              loading={loading}
-              saveMovie={handleSaveMovie}
-            />
-            <Footer />
-            <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
-          </ProtectedRoute>
+        <ProtectedRoute path="/movies" loggedIn={loggedIn}>
+          <Header onEditMenu={handleMenuClick} />
+          <Movies
+            onSubmit={handleSearchMovies}
+            searchErr={searchErr}
+            searchValue={searchValue}
+            movies={movies}
+            onChange={handleSearchInput}
+            handleCheck={checkShortMovie}
+            shortMovie={shortMovie}
+            loading={loading}
+            addsaveMovie={handleSaveMovie}
+          />
+          <Footer />
+          <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
+        </ProtectedRoute>
 
-          <ProtectedRoute path="/saved-movies" loggedIn={loggedIn}>
-            <Header onEditMenu={handleMenuClick} />
-            <SavedMovies
-              handleCheck={checkShortMovie}
-              savedMovies={savedMovies}
-              onSubmit={handleSearchSavedMovies}
-              deleteMovie={handleDeleteMovie}
-              onChange={handleSearchInput}
-              searchValue={searchValue}
-              shortMovie={shortMovie}
-              searchErr={searchErr}
-            />
-            <Footer />
-            <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
-          </ProtectedRoute>
+        <ProtectedRoute path="/saved-movies" loggedIn={loggedIn}>
+          <Header onEditMenu={handleMenuClick} />
+          <SavedMovies
+            handleCheck={checkShortMovie}
+            savedMovies={savedMovies}
+            onSubmit={handleSearchSavedMovies}
+            deleteMovie={handleDeleteMovie}
+            onChange={handleSearchInputSave}
+            searchValue={searchValueSavedMovie}
+            shortMovie={shortMovieSavedMovie}
+            searchErr={searchErr}
+          />
+          <Footer />
+          <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
+        </ProtectedRoute>
 
-          <ProtectedRoute path="/profile" loggedIn={loggedIn}>
-            <Header onEditMenu={handleMenuClick} />
-            <Profile
-              loggedIn={!loggedIn}
-              onSubmit={handleEditProfile}
-              handleChange={handleChange}
-              submitErr={submitErr}
-              signOut={handleSignOut}
-              values={values}
-              loading={loading}
-              isValid={isValid}
-              errors={errors}
-            />
-            <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
-            </ProtectedRoute>
+        <ProtectedRoute path="/profile" loggedIn={loggedIn}>
+          <Header onEditMenu={handleMenuClick} />
+          <Profile
+            loggedIn={!loggedIn}
+            onSubmit={handleEditProfile}
+            handleChange={handleChange}
+            submitErr={submitErr}
+            signOut={handleSignOut}
+            values={values}
+            loading={loading}
+            isValid={isValid}
+            errors={errors}
+          />
+          <Navigation isOpen={isEditMenuOpen} onClose={closeMenu} />
+        </ProtectedRoute>
 
-          <Route path="*">
-            <NotFound />
-          </Route>
-        </Switch>
-      {/* </div> */}
+        <Route path="*">
+          <NotFound />
+        </Route>
+      </Switch>
     </CurrentUserContext.Provider>
   );
 }

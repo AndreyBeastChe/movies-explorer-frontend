@@ -11,18 +11,16 @@ function Profile(props) {
   const [disabledButton, setDisabledButton] = React.useState(false);
   const [popupOpen, setPopupOpen] = React.useState(false);
 
-
   function handleChange(e) {
     const value = e.target.value;
-      e.target.name === "name" ? setName(value) : setEmail(value);
-      props.handleChange(e)
+    e.target.name === "name" ? setName(value) : setEmail(value);
+    props.handleChange(e);
   }
 
   const handleSubmit = (e) => {
     e.preventDefault();
     props.onSubmit(props.values, setEdit, setPopupOpen);
   };
-
 
   const enableEditProfile = () => {
     setEdit(true);
@@ -40,36 +38,26 @@ function Profile(props) {
   const errorMessage = errorStatus(props.submitErr);
 
   React.useEffect(() => {
-    if (edit) {
-      setName(props.values.name);
-      setEmail(props.values.email);
-    } else {
-      setName(currentUser.name);
-      setEmail(currentUser.email);
-    }
+    setName(currentUser.name);
+    setEmail(currentUser.email);
+    validationSameValue();
   }, [edit]);
-  
 
   React.useEffect(() => {
-    validationSameValue()
+    validationSameValue();
   }, [name, email]);
 
-
   function validationSameValue() {
-    if ((name === currentUser.name) || (email === currentUser.email) ){
-      setDisabledButton(true)
-    }
-    else {
-      !props.isValid ?
-      (setDisabledButton(true))
-    :
-      (setDisabledButton(false))
+    if (name === currentUser.name || email === currentUser.email) {
+      setDisabledButton(true);
+    } else {
+      !props.isValid ? setDisabledButton(true) : setDisabledButton(false);
     }
   }
 
   const closePopup = () => {
     setPopupOpen(false);
-};
+  };
 
   return (
     <section className="profile">
@@ -104,6 +92,7 @@ function Profile(props) {
             value={email}
             onChange={handleChange}
             disabled={!edit}
+            pattern="^[^ ]+@[^ ]+\.[a-z]{2,3}$"
           ></input>
           <span className="profile__error">{props.errors.email}</span>
           <span className="submit__error">{errorMessage}</span>
@@ -137,12 +126,12 @@ function Profile(props) {
         )}
       </form>
       <Popup
-                    isOpen={popupOpen}
-                    onClose={closePopup}
-                    onSubmit={props.signOut}
-                    title="Вы уверены?"
-                    buttonName="Да, выйти"
-                />
+        isOpen={popupOpen}
+        onClose={closePopup}
+        onSubmit={props.signOut}
+        title="Вы уверены?"
+        buttonName="Да, выйти"
+      />
     </section>
   );
 }

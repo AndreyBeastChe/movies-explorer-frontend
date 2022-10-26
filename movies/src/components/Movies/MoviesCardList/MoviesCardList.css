@@ -23,9 +23,15 @@
   font-size: 16px;
   line-height: 24px;
   text-align: center;
-  margin-bottom: 500px;
+  margin-bottom: 300px;
 }
 
+@media (min-height: 1000px) {
+  .movies__list {
+    min-height: 1200px;
+  }
+};
+  
 @media (max-width: 1280px) {
   .movies__list {
     gap: 30px 30px;

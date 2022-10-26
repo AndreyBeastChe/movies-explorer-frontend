@@ -11,7 +11,18 @@ function SearchForm(props) {
   return (
     <section className="search">
       <form onSubmit={props.onSubmit} className="search__form" noValidate>
-        <input
+        {props.searchValueSavedMovie?
+        (<input
+          className="search__input"
+          required
+          type="text"
+          placeholder="Фильм"
+          name="search-input"
+          onChange={props.onChange}
+          value={props.searchValueSavedMovie}
+        />)
+        :
+          (<input
           className="search__input"
           required
           type="text"
@@ -19,7 +30,7 @@ function SearchForm(props) {
           name="search-input"
           onChange={props.onChange}
           value={props.searchValue}
-        />
+        />)}
         <button className="search__button" type="submit" name="search-button">
           Поиск
         </button>
