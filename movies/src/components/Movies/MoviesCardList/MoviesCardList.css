@@ -28,6 +28,9 @@
 
 @media (min-height: 1000px) {
   .movies__list {
+    margin-bottom: 1000px;
+  }
+  .movies__error {
     min-height: 1200px;
   }
 };

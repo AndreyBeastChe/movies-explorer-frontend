@@ -1,6 +1,5 @@
 #root {
   background: #202020;
-  /* height: 100%; */
   font-family: "Inter", Arial, sans-serif;
   display: flex;
   flex-direction: column;
@@ -12,16 +11,3 @@
   min-width: 320px;
   min-height: 800px;
 }
-
-/* .page {
-  font-family: "Inter", Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto 0 auto;
-  padding: 0;
-  position: relative;
-  background: #202020;
-  color: #ffffff;
-  min-width: 320px;
-  height: 100%; 
-} */

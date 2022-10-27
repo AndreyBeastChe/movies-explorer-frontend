@@ -28,7 +28,6 @@ function MoviesCardList(props) {
   });
 
   function filterShortMovie(movie) {
-    debugger
     return movie.filter((m) => m.duration <= DURATION_SHORT_MOVIE);
   }
 

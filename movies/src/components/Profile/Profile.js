@@ -10,6 +10,7 @@ function Profile(props) {
   const [email, setEmail] = React.useState(currentUser.email);
   const [disabledButton, setDisabledButton] = React.useState(false);
   const [popupOpen, setPopupOpen] = React.useState(false);
+  const [updatePopupOpen, setUpdatePopupOpen] = React.useState(false);
 
   function handleChange(e) {
     const value = e.target.value;
@@ -19,7 +20,8 @@ function Profile(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.onSubmit(props.values, setEdit, setPopupOpen);
+    const data = { name: name, email: email };
+    props.onSubmit(data, setEdit, setUpdatePopupOpen(true));
   };
 
   const enableEditProfile = () => {
@@ -48,15 +50,23 @@ function Profile(props) {
   }, [name, email]);
 
   function validationSameValue() {
-    if (name === currentUser.name || email === currentUser.email) {
+    //console.log(name)
+    //console.log(email)
+    if (name === currentUser.name && email === currentUser.email) {
       setDisabledButton(true);
     } else {
       !props.isValid ? setDisabledButton(true) : setDisabledButton(false);
     }
   }
 
-  const closePopup = () => {
+  const closeAllPopups = () => {
     setPopupOpen(false);
+    setUpdatePopupOpen(false);
+  };
+
+  const updated = (e) => {
+    e.preventDefault();
+    setUpdatePopupOpen(false);
   };
 
   return (
@@ -127,10 +137,18 @@ function Profile(props) {
       </form>
       <Popup
         isOpen={popupOpen}
-        onClose={closePopup}
+        onClose={closeAllPopups}
         onSubmit={props.signOut}
         title="Вы уверены?"
         buttonName="Да, выйти"
+      />
+
+      <Popup
+        isOpen={updatePopupOpen}
+        onClose={closeAllPopups}
+        onSubmit={updated}
+        title="Профиль изменен!"
+        buttonName="Ок!"
       />
     </section>
   );
