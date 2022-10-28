@@ -1,16 +1,13 @@
 #root {
   background: #202020;
-}
-
-.page {
   font-family: "Inter", Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  margin: 0 auto 0 auto;
+  margin: 0;
   padding: 0;
   position: relative;
   background: #202020;
   color: #ffffff;
   min-width: 320px;
-  height: 100%;
+  min-height: 800px;
 }

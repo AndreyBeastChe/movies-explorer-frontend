@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink} from "react-router-dom";
 import "./Header.css";
 import profile from "../../images/profile.svg";
 
@@ -14,18 +14,20 @@ function Header(props) {
         </a>
       </div>
           <div className="header__films">
-            <Link
+            <NavLink
+             exact activeClassName="header__films-link_active"
               to="/movies"
               className="header__films-link"
             >
               Фильмы
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
+              exact activeClassName="header__films-link_active"
               to="/saved-movies"
               className="header__films-link"
             >
               Сохранённые фильмы
-            </Link>
+            </NavLink>
           </div>
         <div className="header__account">
           <a href="/profile" className="header__account-button">

@@ -8,6 +8,12 @@
   border-radius: 6px;
   overflow: hidden;
 }
+
+.movie__link {
+  width: 364px;
+  height: 203px;
+}
+
 .movie__image {
   width: 364px;
   height: 203px;
